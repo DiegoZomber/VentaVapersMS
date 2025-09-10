@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Venta Vapers MS</title>
+  <style>
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f6f9;color:#111}
+    header{background:#fff;padding:16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+    header h1{margin:0;font-size:20px}
+    nav a{margin-left:14px;text-decoration:none;color:#555}
+    main{max-width:1000px;margin:24px auto;padding:0 16px}
+    h2{margin-top:30px}
+    .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .card{background:#fff;padding:14px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);display:flex;flex-direction:column;gap:8px}
+    .thumb{height:140px;border-radius:6px;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover;border-radius:6px}
+    .price{font-weight:bold}
+    label{font-size:13px;color:#555}
+    select{width:100%;padding:6px;border:1px solid #ccc;border-radius:6px}
+    .btn{background:#3366ff;color:#fff;padding:8px;border:none;border-radius:6px;cursor:pointer}
+    footer{margin:40px auto;padding:16px;font-size:14px;color:#666;max-width:1000px}
+    .info{background:#fff;padding:14px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    .muted{color:#666;font-size:13px}
+    .cart{position:fixed;bottom:18px;right:18px;background:#3366ff;color:#fff;padding:10px 16px;border-radius:999px;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,.2)}
+    .age-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:99}
+    .age-box{background:#fff;padding:20px;border-radius:8px;max-width:380px;text-align:center}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Venta Vapers MS</h1>
+    <nav>
+      <a href="#productos">Productos</a>
+      <a href="#pagos">Pagos</a>
+      <a href="#envios">Envíos</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="productos">
+      <h2>Vapers desechables</h2>
+      <div class="products">
+        <!-- Bang King Twins -->
+        <article class="card" data-name="Bang King Twins 50k" data-price="29.99">
+          <div class="thumb">
+            <img src="img/bang50k.jpg" alt="Bang King Twins 50k">
+          </div>
+          <div><strong>Bang King Twins 50 000 puffs</strong></div>
+          <div class="muted">Cada dispositivo incluye <b>2 sabores</b>.</div>
+          <label for="sabores-bang">Elige sabores:</label>
+          <select id="sabores-bang">
+            <option>Fresa + Sandía</option>
+            <option>Menta + Mango</option>
+            <option>Cola + Piña</option>
+          </select>
+          <div class="price">17,99 €</div>
+          <button class="btn" onclick="addToCart('Bang King Twins 50k',29.99)">Comprar</button>
+        </article>
+
+        <!-- Waspe 60k -->
+        <article class="card" data-name="Waspe 60k" data-price="34.99">
+          <div class="thumb">
+            <img src="img/waspe60k.jpg" alt="Waspe 60k">
+          </div>
+          <div><strong>Waspe 60 000 puffs</strong></div>
+          <div class="muted">Cada dispositivo incluye <b>3 sabores</b>.</div>
+          <label for="sabores-waspe">Elige sabores:</label>
+          <select id="sabores-waspe">
+            <option>Uva + Frambuesa + Limón</option>
+            <option>Sandía + Kiwi + Maracuyá</option>
+            <option>Manzana + Cola + Frutos rojos</option>
+          </select>
+          <div class="price">22,99 €</div>
+          <button class="btn" onclick="addToCart('Waspe 60k',34.99)">Comprar</button>
+        </article>
+      </div>
+    </section>
+
+    <section id="pagos">
+      <h2>Métodos de pago</h2>
+      <div class="info">
+        <p>Aceptamos:</p>
+        <ul>
+          <li>Pago en efectivo</li>
+          <li>Bizzum</li>
+          <li>PayPal</li>
+          <li>Transferencia bancaria</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="envios">
+      <h2>Envíos</h2>
+      <div class="info">
+        <p>Realizamos envíos <strong>solo dentro de la Marina Alta</strong>.</p>
+        <p class="muted">No se aceptan devoluciones.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © Venta Vapers MS — Tienda de vapers desechables en la Marina Alta
+  </footer>
+
+  <button class="cart" onclick="openCart()">Carrito (<span id="count">0</span>)</button>
+
+  <div id="ageModal" class="age-overlay" style="display:none">
+    <div class="age-box">
+      <h2>Confirmación de edad</h2>
+      <p>Debes tener 18 años o más para acceder a esta web.</p>
+      <button class="btn" onclick="confirmAge()">Tengo 18 o más</button>
+      <button class="btn" onclick="declineAge()">Salir</button>
+    </div>
+  </div>
+
+  <script>
+    const cart=[];
+    function addToCart(name,price){
+      cart.push({name,price});
+      document.getElementById('count').textContent=cart.length;
+      alert(name+' añadido al carrito.');
+    }
+    function openCart(){
+      if(cart.length===0){alert('Carrito vacío');return;}
+      let total=0,text='Carrito:\\n';
+      cart.forEach((p,i)=>{text+=(i+1)+'. '+p.name+' - '+p.price.toFixed(2)+' €\\n';total+=p.price});
+      text+='\\nTotal: '+total.toFixed(2)+' €';
+      alert(text);
+    }
+    const key='edadOK';
+    function checkAge(){
+      if(localStorage.getItem(key)!=='yes'){
+        document.getElementById('ageModal').style.display='flex';
+      }
+    }
+    function confirmAge(){
+      localStorage.setItem(key,'yes');
+      document.getElementById('ageModal').style.display='none';
+    }
+    function declineAge(){window.location.href='https://www.google.com';}
+    document.addEventListener('DOMContentLoaded',checkAge);
+  </script>
+</body>
+</html>
